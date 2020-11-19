@@ -112,7 +112,10 @@ class Front3DLoader(LoaderInterface):
 
             # set two custom properties, first that it is a 3D_future object and second the category_id
             obj["is_3D_future"] = True
-            obj["category_id"] = self.mapping[used_obj_name.lower()]
+            if used_obj_name.lower() not in self.mapping:
+                obj["category_id"] = -1 # or 0 for "void"
+            else:
+                obj["category_id"] = self.mapping[used_obj_name.lower()]
 
             # get the material uid of the current mesh data
             current_mat = mesh_data["material"]
@@ -251,7 +254,10 @@ class Front3DLoader(LoaderInterface):
                     obj["is_3D_future"] = True
                     obj["type"] = "Non-Object"  # is an non object used for the interesting score
                     # set the category id based on the used obj name
-                    obj["category_id"] = self.mapping[used_obj_name.lower()]
+                    if used_obj_name.lower() not in self.mapping:
+                        obj["category_id"] = -1 # or 0 for "void"
+                    else:
+                        obj["category_id"] = self.mapping[used_obj_name.lower()]
                     # walk over all material slots
                     for slot in obj.material_slots:
                         mat = slot.material
