@@ -6,8 +6,6 @@ import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 
-sys.path.append(os.path.join(os.path.dirname(__file__)))
-from utils import flow_to_rgb
 
 
 
@@ -30,6 +28,14 @@ def process_img(img, key):
         if len(img.shape) == 3:
             img = img[:, :, 0]
     elif 'flow' in key:
+        try:
+            # This import here is ugly, but else everytime someone uses this script it demands opencv and the progressbar
+            sys.path.append(os.path.join(os.path.dirname(__file__)))
+            from utils import flow_to_rgb
+        except ImportError:
+            raise ImportError("Using .hdf5 containers, which contain flow images needs opencv-python and progressbar "
+                              "to be installed!")
+
         img = flow_to_rgb(img)
     elif "normals" in key:
         img = np.clip(img, 0.0, 1.0)
@@ -45,7 +51,6 @@ def save_array_as_image(array, key, file_path):
             plt.imsave(file_path, val)
 
     elif len(array.shape) == 3 and array.shape[2] == 4:
-        print("Saving image as RGBa (with alpha)")
         val = process_img(array, key)
         plt.imsave(file_path, val)
 
@@ -74,7 +79,6 @@ def convert_hdf(base_file_path, output_folder=None):
                         if val.shape[0] != 2:
                             # mono image
                             file_path = '{}_{}.png'.format(base_name, key)
-                            print("saving to ", file_path)
                             save_array_as_image(val, key, file_path)
                         else:
                             # stereo image

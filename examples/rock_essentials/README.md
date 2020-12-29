@@ -40,12 +40,14 @@ In the output folder you will find a `coco_data/` folder with a `coco_annotation
 ### Global
 
 ```yaml
-"module": "main.Initializer",
-"config": {
-  "global": {
-    "output_dir": "<args:1>",
-    "append_to_existing_output": True
-  }
+{
+    "module": "main.Initializer",
+    "config": {
+      "global": {
+        "output_dir": "<args:1>",
+        "append_to_existing_output": True
+      }
+    }
 }
 ```
 
@@ -90,7 +92,7 @@ In the output folder you will find a `coco_data/` folder with a `coco_annotation
     }
     ]
   }
-},
+}
 ```
 
 This module allows us to integrate the RE's models into our dataset.
@@ -120,7 +122,7 @@ In `batches` we are specifying batches of rocks to load by defining:
     }
     ]
   }
-},
+}
 ```
 
 In `tiles` we are defining a settings of one or multiple ground tiles by specifying:
@@ -159,7 +161,7 @@ In `tiles` we are defining a settings of one or multiple ground tiles by specify
     },
     ]
   }
-},
+}
 ```
 
 This module allows us to set a texture for selected ground planes which have a RE specific material which is set by `constructor.RockEssentialsGroundConstructor` (or sampled if more than one texture is defined) by specifying:
@@ -177,15 +179,15 @@ This module allows us to set a texture for selected ground planes which have a R
     "max_simulation_time": 5,
     "check_object_interval": 1,
     "solver_iters": 25,
-    "steps_per_sec": 250
+    "substeps_per_frame": 40
   }
-},
+}
 ```
 
 Sometimes small objects that are `"physics": True` (just like rocks) can bug through the plane which is `"physics": True` (just like our ground plane) during the animation.
 To counter this, we are setting two new parameters to `object.PhysicsPositioning` module:
 * `"solver_iters"`: Number of constraint solver iterations made per simulation step.
-* `"steps_per_sec"`: Number of simulation steps taken per second. 
+* `"substeps_per_frame"`: Number of simulation steps taken per frame. 
 
 Which usually helps.
 

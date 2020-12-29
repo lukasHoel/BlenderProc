@@ -11,25 +11,34 @@ class Module:
 
     All of these values can be set per Module or of the global config defined in the main.Initializer:
 
-      "module": "main.Initializer",
-      "config":{
-        "global": {
-          "output_dir": "<args:X>"
+    .. code-block:: yaml
+
+      {
+        "module": "main.Initializer",
+        "config":{
+          "global": {
+            "output_dir": "<args:X>"
+          }
         }
       }
 
     If they are set globally all modules will inherit them, if there is no module defined key available.
 
-    .. csv-table::
-       :header: "Parameter", "Description"
+    .. list-table:: 
+        :widths: 25 100 10
+        :header-rows: 1
 
-       "output_is_temp", "If True, all files created in this module will be written into the temp_dir. If False,"
-                         "the output_dir is used. Type: bool."
-       "output_dir", "The path to a directory where all persistent output files should be stored. If it doesn't exist,"
-                     "it is created automatically. Type: string. Default: ""."
-       "temp_dir", "The path to a directory where all temporary output files should be stored. If it doesn't exist,"
-                   "it is created automatically. Type: string. Default: "/dev/shm" or "/tmp/" depending on what"
-                   "is available for Linux and MacOS, and "<env:TEMP>" for Windows."
+        * - Parameter
+          - Description
+          - Type
+        * - output_is_temp
+          - If True, all files created in this module will be written into the temp_dir. If False, the output_dir is
+            used. 
+          - bool
+        * - output_dir
+          - The path to a directory where all persistent output files should be stored. If it doesn't exist, it is
+            created automatically. Default: "".
+          - string
     """
 
     def __init__(self, config):
@@ -43,8 +52,7 @@ class Module:
         self._output_dir = Utility.resolve_path(self.config.get_string("output_dir", ""))
         os.makedirs(self._output_dir, exist_ok=True)
 
-        self._temp_dir = Utility.get_temporary_directory(self.config)
-        os.makedirs(self._temp_dir, exist_ok=True)
+        self._temp_dir = Utility.get_temporary_directory()
 
     def _determine_output_dir(self, output_is_temp_default=True):
         """ Returns the directory where to store output file created by this module.

@@ -23,13 +23,24 @@ class SceneNetLoader(LoaderInterface):
 
     **Configuration**:
 
-    .. csv-table::
-       :header: "Parameter", "Description"
-       "file_path", "The path to the .obj file from SceneNet. Type: str."
-       "texture_folder", "The path to the texture folder used to sample the textures. Type: str."
-       "unknown_texture_folder", "The path to the textures, which are used if the the texture type is unknown."
-                                 "The default path does not exist if the dataset was just downloaded, it has to be"
-                                 "created manually. Type: str. Default: ${texture_folder}/unknown"
+    .. list-table:: 
+        :widths: 25 100 10
+        :header-rows: 1
+
+        * - Parameter
+          - Description
+          - Type
+        * - file_path
+          - The path to the .obj file from SceneNet.
+          - string
+        * - texture_folder
+          - The path to the texture folder used to sample the textures.
+          - string
+        * - unknown_texture_folder
+          - The path to the textures, which are used if the the texture type is unknown. The default path does not
+            exist if the dataset was just downloaded, it has to be created manually. Default:
+            ${texture_folder}/unknown
+          - string
     """
 
     def __init__(self, config):
@@ -58,8 +69,8 @@ class SceneNetLoader(LoaderInterface):
         """
         Run the module, loads all the objects and set the properties correctly (including the category_id)
         """
-        # load the objects
-        loaded_objects = Utility.import_objects(filepath=self._file_path)
+        # load the objects (Use use_image_search=False as some image names have a "/" prefix which will lead to blender search the whole root directory recursively!
+        loaded_objects = Utility.import_objects(filepath=self._file_path, use_image_search=False)
         loaded_objects.sort(key=lambda ele: ele.name)
         # sample materials for each object
         self._random_sample_materials_for_each_obj(loaded_objects)
@@ -79,7 +90,7 @@ class SceneNetLoader(LoaderInterface):
 
         Based on the name the textures from the texture_folder will be selected
 
-        :param loaded_objects objects loaded from the .obj file
+        :param loaded_objects: objects loaded from the .obj file
         """
         # for each object add a material
         for obj in loaded_objects:
@@ -89,8 +100,12 @@ class SceneNetLoader(LoaderInterface):
                 links = material.node_tree.links
                 principled_bsdf = Utility.get_the_one_node_with_type(nodes, "BsdfPrincipled")
                 texture_nodes = Utility.get_nodes_with_type(nodes, "ShaderNodeTexImage")
-                if not texture_nodes:
-                    texture_node = nodes.new("ShaderNodeTexImage")
+                if not texture_nodes or len(texture_nodes) == 1:
+                    if len(texture_nodes) == 1:
+                        # these materials do not exist they are just named in the .mtl files
+                        texture_node = texture_nodes[0]
+                    else:
+                        texture_node = nodes.new("ShaderNodeTexImage")
                     mat_name = material.name
                     if "." in mat_name:
                         mat_name = mat_name[:mat_name.find(".")]
@@ -131,13 +146,14 @@ class SceneNetLoader(LoaderInterface):
 
         Each object will have a custom property with a label, can be used by the SegMapRenderer.
 
-        :param loaded_objects objects loaded from the .obj file
+        :param loaded_objects: objects loaded from the .obj file
         """
 
         #  Some category names in scenenet objects are written differently than in nyu_idset.csv
         normalize_name = {"floor-mat": "floor_mat", "refrigerator": "refridgerator", "shower-curtain": "shower_curtain", 
         "nightstand": "night_stand", "Other-structure": "otherstructure", "Other-furniture": "otherfurniture",
-        "Other-prop": "otherprop"}
+        "Other-prop": "otherprop", "floor_tiles_floor_tiles_0125": "floor", "ground": "floor", "floor_enclose": "floor",
+        "floor_base_object01_56": "floor"}
 
         if LabelIdMapping.label_id_map:
             for obj in loaded_objects:
@@ -149,13 +165,11 @@ class SceneNetLoader(LoaderInterface):
 
                 if obj_name in LabelIdMapping.label_id_map:
                     obj["category_id"] = LabelIdMapping.label_id_map[obj_name]
-                # Check whether the object's name without the plural 's' at the end exists in the mapping.
-                # This is also another case where object names in SceneNet is different from nyu_idset.csv
-                elif obj_name.endswith("s") and obj_name[:-1] in LabelIdMapping.label_id_map:
+                # Check whether the object's name without suffixes like 's', '1' or '2' exist in the mapping.
+                elif obj_name[:-1] in LabelIdMapping.label_id_map:
                     obj["category_id"] = LabelIdMapping.label_id_map[obj_name[:-1]]
                 elif "painting" in obj_name:
                     obj["category_id"] = LabelIdMapping.label_id_map["picture"]
                 else:
                     print("This object was not specified: {} use objects for it.".format(obj_name))
                     obj["category_id"] = LabelIdMapping.label_id_map["otherstructure".lower()]
-

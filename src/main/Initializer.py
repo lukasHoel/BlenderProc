@@ -8,7 +8,10 @@ import bpy
 
 from src.main.Module import Module
 from src.main.GlobalStorage import GlobalStorage
+from src.utility.CameraUtility import CameraUtility
 from src.utility.Config import Config
+from src.utility.DefaultConfig import DefaultConfig
+
 
 class Initializer(Module):
     """ Does some basic initialization of the blender project.
@@ -23,13 +26,21 @@ class Initializer(Module):
 
     **Configuration**:
 
-    .. csv-table::
-       :header: "Parameter", "Description"
+    .. list-table:: 
+        :widths: 25 100 10
+        :header-rows: 1
 
-       "horizon_color", "A list of three elements specifying rgb of the world's horizon/background color."
-                        "Type: list. Default: [0.535, 0.633, 0.608]."
-       "global", "A dictionary of all global set attributes, which are used if a module does not provide a certain "
-                 "key. Type: dict. Default: {}."
+        * - Parameter
+          - Description
+          - Type
+        * - horizon_color
+          - A list of three elements specifying rgb of the world's horizon/background color. Default: [0.535, 0.633,
+            0.608].
+          - list
+        * - global
+          - A dictionary of all global set attributes, which are used if a module does not provide a certain key.
+            Default: {}.
+          - dict
     """
 
     def __init__(self, config):
@@ -43,6 +54,11 @@ class Initializer(Module):
         self._default_init()
 
     def run(self):
+        # Set language if necessary
+        if bpy.context.preferences.view.language != "en_US":
+            print("Setting blender language settings to english during this run")
+            bpy.context.preferences.view.language = "en_US"
+
         prefs = bpy.context.preferences.addons['cycles'].preferences
         # Use cycles
         bpy.context.scene.render.engine = 'CYCLES'
@@ -83,6 +99,10 @@ class Initializer(Module):
         cam_ob = bpy.data.objects.new("Camera", cam)
         bpy.context.scene.collection.objects.link(cam_ob)
         bpy.context.scene.camera = cam_ob
+
+        # Set default intrinsics
+        CameraUtility.set_intrinsics_from_blender_params(DefaultConfig.fov, DefaultConfig.resolution_x, DefaultConfig.resolution_y, DefaultConfig.clip_start, DefaultConfig.clip_end, DefaultConfig.pixel_aspect_x, DefaultConfig.pixel_aspect_y, DefaultConfig.shift_x, DefaultConfig.shift_y, "FOV")
+        CameraUtility.set_stereo_parameters(DefaultConfig.stereo_convergence_mode, DefaultConfig.stereo_convergence_distance, DefaultConfig.stereo_interocular_distance)
 
         random_seed = os.getenv("BLENDER_PROC_RANDOM_SEED")
         if random_seed:

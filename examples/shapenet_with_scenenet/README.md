@@ -24,6 +24,8 @@ python run.py examples/shapenet_with_scenenet/config.yaml <PATH_TO_SCENE_NET_OBJ
 * `<PATH_TO_ShapeNetCore.v2>`: path to the downloaded shape net core v2 dataset, get it [here](http://www.shapenet.org/) 
 * `examples/shapenet_with_scenenet/output`: path to the output directory.
 
+As this example requires a bed to be present in the scene, it will only work with the `1Bedroom/*` SceneNet scenes.
+
 ## Visualization
 
 In the output folder you will find a series of `.hdf5` containers. These can be visualized with the script:
@@ -50,13 +52,15 @@ python scripts/visHdf5Files.py examples/shapenet_with_scenenet/output/*.hdf5
 ### SceneNetLoader
 
 ```yaml
-"module": "loader.SceneNetLoader",
-"config": {
-  # after downloading the scenenet dataset it should be located inside of resources/scenenet/SceneNetData/
-  "file_path": "<args:0>",
-  "texture_folder": "<args:1>",
-  "add_properties": {
-    "cp_physics": False
+{
+  "module": "loader.SceneNetLoader",
+  "config": {
+    # after downloading the scenenet dataset it should be located inside of resources/scenenet/SceneNetData/
+    "file_path": "<args:0>",
+    "texture_folder": "<args:1>",
+    "add_properties": {
+      "cp_physics": False
+    }
   }
 }
 ```
@@ -70,14 +74,16 @@ To each loaded object do we add the custom property `cp_physics: False`, which m
 ### ShapeNetLoader 
 
 ```yaml
-"module": "loader.ShapeNetLoader",
-"config": {
-  "data_path": "<args:0>",
-  "used_synset_id": "02801938",
-  "add_properties": {
-    "cp_shape_net_object": True,
-    # set the custom property physics to True
-    "cp_physics": True
+{
+  "module": "loader.ShapeNetLoader",
+  "config": {
+    "data_path": "<args:0>",
+    "used_synset_id": "02801938",
+    "add_properties": {
+      "cp_shape_net_object": True,
+      # set the custom property physics to True
+      "cp_physics": True
+    }
   }
 }
 ```
@@ -90,34 +96,36 @@ We also add a custom property to make the selection with `EntityManipulator` in 
 ### EntityManipulator
  
 ```yaml
-"module": "manipulators.EntityManipulator",
-"config": {
-  # get all shape net objects, as we have only loaded one, this returns only one entity
-  "selector": {
-    "provider": "getter.Entity",
-    "conditions": {
-      "cp_shape_net_object": True,
-      "type": "MESH"
-    }
-  },
-  # Sets the location of this entity above a bed
-  "location": {
-    "provider": "sampler.UpperRegionSampler",
-    "min_height": 0.3,
-    "to_sample_on": {
+{
+    "module": "manipulators.EntityManipulator",
+    "config": {
+      # get all shape net objects, as we have only loaded one, this returns only one entity
+      "selector": {
         "provider": "getter.Entity",
         "conditions": {
-          "cp_category_id": 4, # 4 is the category of the bed
+          "cp_shape_net_object": True,
           "type": "MESH"
         }
-
+      },
+      # Sets the location of this entity above a bed
+      "location": {
+        "provider": "sampler.UpperRegionSampler",
+        "min_height": 0.3,
+        "to_sample_on": {
+            "provider": "getter.Entity",
+            "conditions": {
+              "cp_category_id": 4, # 4 is the category of the bed
+              "type": "MESH"
+            }
+    
+        }
+      },
+      # by adding a modifier we avoid that the objects falls through other objects during the physics simulation
+      "cf_add_modifier": {
+        "name": "Solidify",
+        "thickness": 0.0025
+      }
     }
-  },
-  # by adding a modifier we avoid that the objects falls through other objects during the physics simulation
-  "cf_add_modifier": {
-    "name": "Solidify",
-    "thickness": 0.0025
-  }
 }
 ```
 
@@ -130,70 +138,75 @@ Finally, we add a solidify modifier to get a correct physics interaction.
 ### PhysicsPositioning
 
 ```yaml
-"module": "object.PhysicsPositioning",
-"config": {
-  "solver_iters": 30,
-  "steps_per_sec": 250,
-  "min_simulation_time": 0.5,
-  "max_simulation_time": 4,
-  "check_object_interval": 0.25,
-  "mass_scaling": True,
-  "mass_factor": 2000,
-  "collision_margin": 0.00001
+{
+    "module": "object.PhysicsPositioning",
+    "config": {
+      "solver_iters": 30,
+      "substeps_per_frame": 40,
+      "min_simulation_time": 0.5,
+      "max_simulation_time": 4,
+      "check_object_interval": 0.25,
+      "mass_scaling": True,
+      "mass_factor": 2000,
+      "collision_margin": 0.00001,
+      "collision_shape": "MESH"
+    }
 }
 ```
 
 We then run the physics simulation, for more information about that please see the [example/physiscs_positioning](../physics_positioning).
 The high mass factor and the small collision margin guarantee that the object does not move too much.
-Important here are the amount of `solver_iters` and `steps_per_sec` as they have to be high, as lot of objects in the ShapeNet dataset consist out of thin small pieces.
+Important here are the amount of `solver_iters` and `substeps_per_frame` as they have to be high, as lot of objects in the ShapeNet dataset consist out of thin small pieces.
 Without this they might slide into the SceneNet objects.
 
 ### CameraSampler
 
 ```yaml
-"module": "camera.CameraSampler",
-"config": {
-  "cam_poses": [
-  {
-    "number_of_samples": 5,
-    "location": {
-      "provider":"sampler.PartSphere",
-      "center": {
-        "provider": "getter.POI",
-        "selector": {
-          "provider": "getter.Entity",
-          "conditions": {
-            "cp_shape_net_object": True,
-            "type": "MESH"
-          }
-        }
-      },
-      "distance_above_center": 0.5,
-      "radius": 2,
-      "mode": "SURFACE"
-    },
-    "rotation": {
-      "format": "look_at",
-      "value": {
-        "provider": "getter.POI",
-        "selector": {
-          "provider": "getter.Entity",
-          "conditions": {
-            "cp_shape_net_object": True,
-            "type": "MESH"
+{
+    "module": "camera.CameraSampler",
+    "config": {
+      "cam_poses": [
+      {
+        "number_of_samples": 5,
+        "location": {
+          "provider":"sampler.PartSphere",
+          "center": {
+            "provider": "getter.POI",
+            "selector": {
+              "provider": "getter.Entity",
+              "conditions": {
+                "cp_shape_net_object": True,
+                "type": "MESH"
+              }
+            }
+          },
+          "distance_above_center": 0.5,
+          "radius": 2,
+          "mode": "SURFACE"
+        },
+        "rotation": {
+          "format": "look_at",
+          "value": {
+            "provider": "getter.POI",
+            "selector": {
+              "provider": "getter.Entity",
+              "conditions": {
+                "cp_shape_net_object": True,
+                "type": "MESH"
+              }
+            }
           }
         }
       }
+      ]
     }
-  }
-  ]
 }
 ```
 
 We sample here five random camera poses, where the location is on a PartSphere with a radius of 2 around the ShapeNet object.
 Only points, which are 0.5 above the center are considered.
 These objects are selected via a `getter.Entity` provider, which feeds into a `getter.POI`, which returns the bounding box center of the selected object. 
-Each cameras rotation is such that it looks directly at the object and the camera faces upwards in Z direction, we use the same selection for the center of the object as for the location.
+Each cameras' rotation is such that it looks directly at the object, and the camera faces upwards in Z direction, we use the same selection for the center of the object as for the location.
 
 We render again and store the result inside of `.hdf5` container.
 

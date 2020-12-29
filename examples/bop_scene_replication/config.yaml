@@ -7,7 +7,8 @@
       "h5py",
       "scikit-image",
       "pypng==0.0.20",
-      "scipy==1.2.2"
+      "scipy==1.2.2",
+      "matplotlib==2.2.4"
     ]
   },
   "modules": [
@@ -23,6 +24,7 @@
     {
       "module": "loader.BopLoader",
       "config": {
+        "source_frame": ["X", "-Y", "-Z"],
         "bop_dataset_path": "<args:0>/<args:1>",
         "mm2m": True,
         "split": "test", # careful, some BOP datasets only have test sets

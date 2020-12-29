@@ -5,6 +5,9 @@ import bpy
 
 from src.camera.CameraSampler import CameraSampler
 from src.utility.BlenderUtility import get_all_mesh_objects, get_bounds
+from src.utility.CameraUtility import CameraUtility
+from src.utility.Config import Config
+
 
 class Front3DCameraSampler(CameraSampler):
     """
@@ -21,11 +24,17 @@ class Front3DCameraSampler(CameraSampler):
 
     **Configuration**:
 
-    .. csv-table::
-        :header: "Parameter", "Description"
-        "amount_of_objects_needed_per_room", "The amount of objects needed per room, so that cameras are sampled in it.
-                                             "This avoids that cameras are sampled in empty rooms."
-                                             "Type: int. Default: 2"
+    .. list-table:: 
+        :widths: 25 100 10
+        :header-rows: 1
+
+        * - Parameter
+          - Description
+          - Type
+        * - amount_of_objects_needed_per_room
+          - The amount of objects needed per room, so that cameras are sampled in it. This avoids that cameras are 
+             sampled in empty rooms. Default: 2
+          - int
     """
 
     def __init__(self, config):
@@ -69,7 +78,7 @@ class Front3DCameraSampler(CameraSampler):
         floor_obj = random.choice(self.used_floors)
 
         # Sample/set intrinsics
-        self._set_cam_intrinsics(cam, config)
+        self._set_cam_intrinsics(cam, Config(self.config.get_raw_dict("intrinsics", {})))
 
         # Sample camera extrinsics (we do not set them yet for performance reasons)
         cam2world_matrix = self._cam2world_matrix_from_cam_extrinsics(config)
@@ -86,7 +95,7 @@ class Front3DCameraSampler(CameraSampler):
         # Check if sampled pose is valid
         if self._is_pose_valid(floor_obj, cam, cam_ob, cam2world_matrix):
             # Set camera extrinsics as the pose is valid
-            cam_ob.matrix_world = cam2world_matrix
+            CameraUtility.add_camera_pose(cam2world_matrix)
             return True
         else:
             return False
@@ -109,4 +118,3 @@ class Front3DCameraSampler(CameraSampler):
             return False
 
         return super()._is_pose_valid(cam, cam_ob, cam2world_matrix)
-

@@ -59,7 +59,7 @@ This is necessary to coincide with the aspect ratio assumed by the `scn2cam` scr
   "config": {
     "path": "<args:1>"
   }
-},
+}
 ```
 
 This loader automatically loads a SUNCG scene/house given the corresponding `house.json` file. 
@@ -73,16 +73,19 @@ The `SuncgLoader` also sets the `category_id` of each object, such that semantic
   "module": "camera.CameraLoader",
   "config": {
     "path": "<args:0>",
-    "file_format": "location rotation/value _ _ _ fov _ _",
+    "file_format": "location rotation/value _ _ _ _ _ _",
     "source_frame": ["X", "-Z", "Y"],
     "default_cam_param": {
       "rotation": {
         "format": "forward_vec"
       }
-      "fov_is_half": true
+    },
+    "intrinsics": {
+      "fov": 1,
+      "pixel_aspect_x": 1.333333333
     }
   }
-},
+}
 ```
 
 Here the cam poses from the given file are loaded. 
@@ -93,14 +96,15 @@ It's also necessary here to specify a different `source_frame`, as `scn2cam` doe
 
 In `default_cam_param` we set parameters which are the same across all cam poses: 
 We change the `rotation/format`. This is necessary as rotations are specified via a forward vector in the camera file. 
-Also `fov_is_half` has to be activated, as SUNCG describes the FOV as the angle between forward vector and one side of the frustum, while blender assumes the FOV describes the angle between both sides of the frustum.
+
+In the `intrinsics`, we further set the FOV and pixel aspect ratio to the same values used by `scn2cam`.
 
 ### SuncgLighting
 
 ```yaml
 {
   "module": "lighting.SuncgLighting",
-},
+}
 ```
 
 This module automatically sets light sources inside the loaded house.

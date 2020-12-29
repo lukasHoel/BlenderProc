@@ -3,6 +3,8 @@ import json
 import os
 import random
 
+import bpy
+
 from src.loader.LoaderInterface import LoaderInterface
 from src.utility.Utility import Utility
 from src.utility.LabelIdMapping import LabelIdMapping
@@ -23,11 +25,19 @@ class ShapeNetLoader(LoaderInterface):
 
     **Configuration**:
 
-    .. csv-table::
-       :header: "Parameter", "Description"
+    .. list-table:: 
+        :widths: 25 100 10
+        :header-rows: 1
 
-       "data_path", "The path to the ShapeNetCore.v2 folder. Type: string."
-       "used_synset_id", "The synset id for example: '02691156', check the data_path folder for more ids. Type: int."
+        * - Parameter
+          - Description
+          - Type
+        * - data_path
+          - The path to the ShapeNetCore.v2 folder.
+          - string
+        * - used_synset_id
+          - The synset id for example: '02691156', check the data_path folder for more ids.
+          - int
     """
 
     def __init__(self, config):
@@ -44,6 +54,7 @@ class ShapeNetLoader(LoaderInterface):
     def get_files_with_synset(used_synset_id, path_to_taxonomy_file, data_path):
         """
         Returns a list of a .obj file for the given synset_id
+
         :param used_synset_id: the id of the category something like: '02691156', see the data_path folder for more ids
         :param path_to_taxonomy_file: path to the taxonomy.json file, should be in the data_path, too
         :param data_path: path to the ShapeNetCore.v2 folder
@@ -59,6 +70,8 @@ class ShapeNetLoader(LoaderInterface):
                         if synset_id == used_synset_id or used_synset_id in block["children"]:
                             id_path = os.path.join(data_path, synset_id)
                             files.extend(glob.glob(os.path.join(id_path, "*", "models", "*.obj")))
+            # Sort files to make random choice deterministic
+            files.sort()
             return files
         else:
             raise Exception("The taxonomy file could not be found: {}".format(path_to_taxonomy_file))
@@ -78,10 +91,20 @@ class ShapeNetLoader(LoaderInterface):
             for obj in loaded_obj:
                 obj['category_id'] = LabelIdMapping.label_id_map["void"]
 
+        # removes the x axis rotation found in all ShapeNet objects, this is caused by importing .obj files
+        # the object has the same pose as before, just that the rotation_euler is now [0, 0, 0]
+        LoaderInterface.remove_x_axis_rotation(loaded_obj)
+
+        # move the origin of the object to the world origin and on top of the X-Y plane
+        # makes it easier to place them later on, this does not change the `.location`
+        LoaderInterface.move_obj_origin_to_bottom_mean_point(loaded_obj)
+        bpy.ops.object.select_all(action='DESELECT')
+
     def _correct_materials(self, objects):
         """
         If the used material contains an alpha texture, the alpha texture has to be flipped to be correct
-        :param objects, objects where the material maybe wrong
+
+        :param objects: objects where the material maybe wrong
         """
 
         for obj in objects:

@@ -1,5 +1,6 @@
 import bpy
 
+from src.utility.CameraUtility import CameraUtility
 from src.utility.ItemWriter import ItemWriter
 from src.writer.WriterInterface import WriterInterface
 
@@ -9,13 +10,25 @@ class CameraStateWriter(WriterInterface):
 
     **Attributes per object**:
 
-    .. csv-table::
-       :header: "Keyword", "Description"
+    .. list-table:: 
+        :widths: 25 100 10
+        :header-rows: 1
 
-       "fov_x", "The horizontal FOV. Type: float."
-       "fov_y", "The vertical FOV. Type: float."
-       "half_fov_x", "Half of the horizontal FOV. Type: float."
-       "half_fov_y", "Half of the vertical FOV. Type: float."
+        * - Parameter
+          - Description
+          - Type
+        * - fov_x
+          - The horizontal FOV.
+          - float
+        * - fov_y
+          - The vertical FOV.
+          - float
+        * - half_fov_x
+          - Half of the horizontal FOV.
+          - float
+        * - half_fov_y
+          - Half of the vertical FOV.
+          - float
     """
 
     def __init__(self, config):
@@ -28,7 +41,7 @@ class CameraStateWriter(WriterInterface):
         cam = cam_ob.data
         cam_pose = (cam, cam_ob)
 
-        self.write_attributes_to_file(self.object_writer, [cam_pose], "campose_", "campose", ["id", "location", "rotation_euler", "fov_x", "fov_y", "shift_x", "shift_y"])
+        self.write_attributes_to_file(self.object_writer, [cam_pose], "campose_", "campose", ["id", "cam2world_matrix", "cam_K"])
 
     def _get_attribute(self, cam_pose, attribute_name):
         """ Returns the value of the requested attribute for the given object.
@@ -51,5 +64,7 @@ class CameraStateWriter(WriterInterface):
             return cam.angle_x * 0.5
         elif attribute_name == "half_fov_y":
             return cam.angle_y * 0.5
+        elif attribute_name == "cam_K":
+            return [[x for x in c] for c in CameraUtility.get_intrinsics_as_K_matrix()]
         else:
             return super()._get_attribute(cam_ob, attribute_name)
