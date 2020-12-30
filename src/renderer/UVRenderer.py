@@ -2,6 +2,7 @@ import bpy
 
 from src.renderer.RendererInterface import RendererInterface
 from src.utility.Utility import Utility
+from src.utility.BlenderUtility import get_all_mesh_objects
 
 
 class UVRenderer(RendererInterface):
@@ -51,6 +52,13 @@ class UVRenderer(RendererInterface):
     def run(self):
         with Utility.UndoAfterExecution():
             self._configure_renderer()
+
+            for ob in get_all_mesh_objects():
+                # Loops per face
+                for face in ob.data.polygons:
+                    for vert_idx, loop_idx in zip(face.vertices, face.loop_indices):
+                        uv_coords = ob.data.uv_layers.active.data[loop_idx].uv
+                        print("face idx: %i, vert idx: %i, uvs: %f, %f" % (face.index, vert_idx, uv_coords.x, uv_coords.y))
 
             new_mat = self._create_uv_material()
 
