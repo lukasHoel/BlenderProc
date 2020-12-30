@@ -32,10 +32,10 @@ class SmartUVManipulator(Module):
         angle_limit = self.config.get_float("angle_limit", 1.2217)
 
         # entering edit mode
-        bpy.ops.object.editmode_toggle()
+        #bpy.ops.object.editmode_toggle()
         # select all objects elements
         bpy.ops.mesh.select_all(action='SELECT')
         # the actual unwrapping operation, 1.2217 are 70 degrees
         bpy.ops.uv.smart_project(correct_aspect=False, angle_limit=angle_limit)
         # exiting edit mode
-        bpy.ops.object.editmode_toggle()
+        #bpy.ops.object.editmode_toggle()
