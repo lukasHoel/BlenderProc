@@ -43,25 +43,16 @@ class UVRenderer(RendererInterface):
         #links.new(texture_coord_node.outputs['UV'], vector_transform_node.inputs['Vector'])
         #links.new(vector_transform_node.outputs['Vector'], output.inputs['Surface'])
 
-        links.new(texture_coord_node.outputs['UV'], emission_node.inputs['Color'])
+        #links.new(texture_coord_node.outputs['UV'], emission_node.inputs['Color'])
         # TODO pass this first to a node that converts it to [0, 1] range? why is it not in this range?
-        links.new(emission_node.outputs['Emission'], output.inputs['Surface'])
+        #links.new(emission_node.outputs['Emission'], output.inputs['Surface'])
 
-        #links.new(texture_coord_node.outputs['Generated'], output.inputs['Surface'])
+        links.new(texture_coord_node.outputs['Generated'], output.inputs['Surface'])
         return new_mat
 
     def run(self):
         with Utility.UndoAfterExecution():
             self._configure_renderer()
-
-            bpy.context.scene.cycles.diffuse_bounces = 0
-            bpy.context.scene.cycles.glossy_bounces = 0
-            bpy.context.scene.cycles.ao_bounces_render = 0
-            bpy.context.scene.cycles.max_bounces = 0
-            bpy.context.scene.cycles.min_bounces = 0
-            bpy.context.scene.cycles.transmission_bounces = 0
-            bpy.context.scene.cycles.transparent_max_bounces = 0
-            bpy.context.scene.cycles.volume_bounces = 0
 
             """
             for ob in get_all_mesh_objects():
