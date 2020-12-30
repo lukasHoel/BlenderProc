@@ -53,14 +53,15 @@ class UVRenderer(RendererInterface):
         with Utility.UndoAfterExecution():
             self._configure_renderer()
 
+            """
             for ob in get_all_mesh_objects():
                 # Loops per face
                 for face in ob.data.polygons:
                     for vert_idx, loop_idx in zip(face.vertices, face.loop_indices):
                         uv_coords = ob.data.uv_layers.active.data[loop_idx].uv
                         print("face idx: %i, vert idx: %i, uvs: %f, %f" % (face.index, vert_idx, uv_coords.x, uv_coords.y))
-
             raise ValueError("debug")
+            """
 
             new_mat = self._create_uv_material()
 
@@ -84,6 +85,37 @@ class UVRenderer(RendererInterface):
             if self._use_alpha_channel:
                 self.add_alpha_channel_to_textures(blurry_edges=False)
 
-            self._render("uvmap_")
+            self._render_opengl("uvmap_")
 
         self._register_output("uvmap_", "uvmap", ".exr", "2.0.0")
+
+    def _render_opengl(self, default_prefix, custom_file_path=None):
+        """ Renders each registered keypoint.
+
+        :param default_prefix: The default prefix of the output files.
+        """
+        if self.config.get_bool("render_distance", False):
+            self._write_distance_to_file()
+
+        if self.config.get_bool("render_normals", False):
+            self._write_normal_to_file()
+
+        if custom_file_path is None:
+            bpy.context.scene.render.filepath = os.path.join(self._determine_output_dir(),
+                                                             self.config.get_string("output_file_prefix",
+                                                                                    default_prefix))
+        else:
+            bpy.context.scene.render.filepath = custom_file_path
+
+        # Skip if there is nothing to render
+        if bpy.context.scene.frame_end != bpy.context.scene.frame_start:
+            if len(get_all_mesh_objects()) == 0:
+                raise Exception("There are no mesh-objects to render, "
+                                "please load an object before invoking the renderer.")
+            # As frame_end is pointing to the next free frame, decrease it by one, as
+            # blender will render all frames in [frame_start, frame_ned]
+            bpy.context.scene.frame_end -= 1
+            if not self._avoid_rendering:
+                bpy.ops.render.opengl(animation=True, write_still=True)
+            # Revert changes
+            bpy.context.scene.frame_end += 1
