@@ -86,7 +86,7 @@ class UVRenderer(RendererInterface):
             if self._use_alpha_channel:
                 self.add_alpha_channel_to_textures(blurry_edges=False)
 
-            self._render_opengl("uvmap_")
+            self._render("uvmap_")
 
         self._register_output("uvmap_", "uvmap", ".exr", "2.0.0")
 
