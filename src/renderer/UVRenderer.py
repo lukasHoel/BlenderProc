@@ -67,7 +67,7 @@ class UVRenderer(RendererInterface):
             new_mat = self._create_uv_material()
 
             # render normals
-            bpy.context.scene.cycles.samples = 1 # this gives the best result for emission shader #TODO test for uv rendering
+            bpy.context.scene.cycles.samples = 100 # this gives the best result for emission shader #TODO test for uv rendering
             bpy.context.view_layer.cycles.use_denoising = False
             for obj in bpy.context.scene.objects:
                 if len(obj.material_slots) > 0:
