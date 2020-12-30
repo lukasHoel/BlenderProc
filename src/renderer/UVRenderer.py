@@ -30,6 +30,7 @@ class UVRenderer(RendererInterface):
         links = new_mat.node_tree.links
         texture_coord_node = nodes.new(type='ShaderNodeTexCoord')
         emission_node = nodes.new(type='ShaderNodeEmission')
+        # TODO set intensity of emission_node to 1.0 ( see emission docu online)
         output = Utility.get_the_one_node_with_type(nodes, 'OutputMaterial')
 
         vector_transform_node = nodes.new(type='ShaderNodeVectorTransform')
@@ -40,10 +41,10 @@ class UVRenderer(RendererInterface):
         #links.new(texture_coord_node.outputs['UV'], vector_transform_node.inputs['Vector'])
         #links.new(vector_transform_node.outputs['Vector'], output.inputs['Surface'])
 
-        #links.new(texture_coord_node.outputs['UV'], emission_node.inputs['Color'])
-        #links.new(emission_node.outputs['Emission'], output.inputs['Surface'])
+        links.new(texture_coord_node.outputs['Generated'], emission_node.inputs['Color'])
+        links.new(emission_node.outputs['Emission'], output.inputs['Surface'])
 
-        links.new(texture_coord_node.outputs['Generated'], output.inputs['Surface'])
+        #links.new(texture_coord_node.outputs['Generated'], output.inputs['Surface'])
         return new_mat
 
     def run(self):
