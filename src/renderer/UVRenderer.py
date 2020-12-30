@@ -32,6 +32,7 @@ class UVRenderer(RendererInterface):
         links = new_mat.node_tree.links
         texture_coord_node = nodes.new(type='ShaderNodeTexCoord')
         emission_node = nodes.new(type='ShaderNodeEmission')
+        emission_node.inputs['Strength'].default_value = 1
         # TODO set intensity of emission_node to 1.0 ( see emission docu online)
         output = Utility.get_the_one_node_with_type(nodes, 'OutputMaterial')
 
@@ -43,11 +44,14 @@ class UVRenderer(RendererInterface):
         #links.new(texture_coord_node.outputs['UV'], vector_transform_node.inputs['Vector'])
         #links.new(vector_transform_node.outputs['Vector'], output.inputs['Surface'])
 
-        #links.new(texture_coord_node.outputs['UV'], emission_node.inputs['Color'])
+        links.new(texture_coord_node.outputs['UV'], emission_node.inputs['Color'])
         # TODO pass this first to a node that converts it to [0, 1] range? why is it not in this range?
-        #links.new(emission_node.outputs['Emission'], output.inputs['Surface'])
+        links.new(emission_node.outputs['Emission'], output.inputs['Surface'])
 
-        links.new(texture_coord_node.outputs['UV'], output.inputs['Surface'])
+        # TODO think about logging the outputs of the nodes? https://devtalk.blender.org/t/is-it-possible-to-read-the-output-values-of-nodes-from-a-material/7899
+
+
+        #links.new(texture_coord_node.outputs['UV'], output.inputs['Surface'])
         return new_mat
 
     def run(self):
@@ -67,7 +71,7 @@ class UVRenderer(RendererInterface):
             new_mat = self._create_uv_material()
 
             # render normals
-            bpy.context.scene.cycles.samples = 100 # this gives the best result for emission shader #TODO test for uv rendering
+            bpy.context.scene.cycles.samples = 1 # this gives the best result for emission shader #TODO test for uv rendering
             bpy.context.view_layer.cycles.use_denoising = False
             for obj in bpy.context.scene.objects:
                 if len(obj.material_slots) > 0:
