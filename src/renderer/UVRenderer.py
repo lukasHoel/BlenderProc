@@ -60,6 +60,8 @@ class UVRenderer(RendererInterface):
                         uv_coords = ob.data.uv_layers.active.data[loop_idx].uv
                         print("face idx: %i, vert idx: %i, uvs: %f, %f" % (face.index, vert_idx, uv_coords.x, uv_coords.y))
 
+            raise ValueError("debug")
+
             new_mat = self._create_uv_material()
 
             # render normals
