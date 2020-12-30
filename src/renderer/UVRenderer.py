@@ -4,6 +4,7 @@ from src.renderer.RendererInterface import RendererInterface
 from src.utility.Utility import Utility
 from src.utility.BlenderUtility import get_all_mesh_objects
 
+import os
 
 class UVRenderer(RendererInterface):
     """  Renders uv images for each registered key point.
@@ -94,12 +95,6 @@ class UVRenderer(RendererInterface):
 
         :param default_prefix: The default prefix of the output files.
         """
-        if self.config.get_bool("render_distance", False):
-            self._write_distance_to_file()
-
-        if self.config.get_bool("render_normals", False):
-            self._write_normal_to_file()
-
         if custom_file_path is None:
             bpy.context.scene.render.filepath = os.path.join(self._determine_output_dir(),
                                                              self.config.get_string("output_file_prefix",
