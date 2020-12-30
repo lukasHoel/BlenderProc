@@ -54,6 +54,15 @@ class UVRenderer(RendererInterface):
         with Utility.UndoAfterExecution():
             self._configure_renderer()
 
+            bpy.context.scene.cycles.diffuse_bounces = 0
+            bpy.context.scene.cycles.glossy_bounces = 0
+            bpy.context.scene.cycles.ao_bounces_render = 0
+            bpy.context.scene.cycles.max_bounces = 0
+            bpy.context.scene.cycles.min_bounces = 0
+            bpy.context.scene.cycles.transmission_bounces = 0
+            bpy.context.scene.cycles.transparent_max_bounces = 0
+            bpy.context.scene.cycles.volume_bounces = 0
+
             """
             for ob in get_all_mesh_objects():
                 # Loops per face
