@@ -47,7 +47,7 @@ class UVRenderer(RendererInterface):
         # TODO pass this first to a node that converts it to [0, 1] range? why is it not in this range?
         #links.new(emission_node.outputs['Emission'], output.inputs['Surface'])
 
-        links.new(texture_coord_node.outputs['Generated'], output.inputs['Surface'])
+        links.new(texture_coord_node.outputs['UV'], output.inputs['Surface'])
         return new_mat
 
     def run(self):
