@@ -32,8 +32,9 @@ class UVRenderer(RendererInterface):
         emission_node = nodes.new(type='ShaderNodeEmission')
         output = Utility.get_the_one_node_with_type(nodes, 'OutputMaterial')
 
-        links.new(texture_coord_node.outputs['UV'], emission_node.inputs['Color']) # TODO need to add 0-channel?
-        links.new(emission_node.outputs['Emission'], output.inputs['Surface'])
+        #links.new(texture_coord_node.outputs['UV'], emission_node.inputs['Color'])
+        #links.new(emission_node.outputs['Emission'], output.inputs['Surface'])
+        links.new(texture_coord_node.outputs['UV'], output.inputs['Surface'])
         return new_mat
 
     def run(self):
