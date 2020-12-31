@@ -221,6 +221,7 @@ class Front3DLoader(LoaderInterface):
             mesh.polygons.foreach_set("loop_total", loop_total)
 
             # the uv coordinates are reshaped then the face coords are extracted
+            """
             uv = np.reshape(np.array([float(ele) for ele in mesh_data["uv"]]), [num_vertices, 2])
             used_uvs = uv[faces, :]
 
@@ -235,9 +236,21 @@ class Front3DLoader(LoaderInterface):
 
             if np.any(used_uvs > 1) or np.any(used_uvs < 0):
                 raise ValueError(f"Mesh {used_obj_name} has out-of-range uvs!")
+            """
 
             # this update converts the upper data into a mesh
             mesh.update()
+
+            # set this obj active
+            bpy.context.scene.objects.active = obj
+            # entering edit mode
+            bpy.ops.object.editmode_toggle()
+            # select all objects elements
+            bpy.ops.mesh.select_all(action='SELECT')
+            # the actual unwrapping operation, 1.2217 are 70 degrees
+            bpy.ops.uv.smart_project(correct_aspect=False, angle_limit=1.2217)
+            # exiting edit mode
+            bpy.ops.object.editmode_toggle()
 
             # the generation might fail if the data does not line up
             # this is not used as even if the data does not line up it is still able to render the objects
