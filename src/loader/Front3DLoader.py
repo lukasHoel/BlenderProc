@@ -223,6 +223,10 @@ class Front3DLoader(LoaderInterface):
             # the uv coordinates are reshaped then the face coords are extracted
             uv = np.reshape(np.array([float(ele) for ele in mesh_data["uv"]]), [num_vertices, 2])
             used_uvs = uv[faces, :]
+
+            # normalize in [0,1] range # TODO is this correct?
+            used_uvs = (used_uvs - np.min(used_uvs)) / np.ptp(used_uvs)
+
             # and again reshaped back to the long list
             used_uvs = np.reshape(used_uvs, [2 * num_vertex_indicies])
 
