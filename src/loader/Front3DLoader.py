@@ -242,7 +242,7 @@ class Front3DLoader(LoaderInterface):
             mesh.update()
 
             # set this obj active
-            bpy.context.scene.objects.active = obj
+            bpy.context.view_layer.objects.active = obj
             # entering edit mode
             bpy.ops.object.editmode_toggle()
             # select all objects elements
