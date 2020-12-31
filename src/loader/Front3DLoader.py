@@ -229,6 +229,9 @@ class Front3DLoader(LoaderInterface):
             mesh.uv_layers.new(name="new_uv_layer")
             mesh.uv_layers[-1].data.foreach_set("uv", used_uvs)
 
+            if np.any(used_uvs > 1) or np.any(used_uvs < 0):
+                raise ValueError(f"Mesh {used_obj_name} has out-of-range uvs!")
+
             # this update converts the upper data into a mesh
             mesh.update()
 

@@ -58,7 +58,7 @@ class UVRenderer(RendererInterface):
         with Utility.UndoAfterExecution():
             self._configure_renderer()
 
-            
+
             for ob in get_all_mesh_objects():
                 # Loops per face
                 for face in ob.data.polygons:
