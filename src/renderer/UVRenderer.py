@@ -58,15 +58,16 @@ class UVRenderer(RendererInterface):
         with Utility.UndoAfterExecution():
             self._configure_renderer()
 
-            """
+            
             for ob in get_all_mesh_objects():
                 # Loops per face
                 for face in ob.data.polygons:
                     for vert_idx, loop_idx in zip(face.vertices, face.loop_indices):
                         uv_coords = ob.data.uv_layers.active.data[loop_idx].uv
-                        print("face idx: %i, vert idx: %i, uvs: %f, %f" % (face.index, vert_idx, uv_coords.x, uv_coords.y))
+                        if uv_coords.x < 0 or uv_coords.x > 1 or uv_coords.y < 0 or uv_coords.y > 1:
+                            print("face idx: %i, vert idx: %i, uvs: %f, %f" % (face.index, vert_idx, uv_coords.x, uv_coords.y))
             raise ValueError("debug")
-            """
+
 
             new_mat = self._create_uv_material()
 
