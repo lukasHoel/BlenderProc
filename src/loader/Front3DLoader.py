@@ -127,6 +127,7 @@ class Front3DLoader(LoaderInterface):
             obj.name = used_obj_name
             obj["constructid"] = mesh_data["constructid"]
             obj["instanceid"] = mesh_data["instanceid"]
+            obj["uid"] = f'{mesh_data["constructid"]}-{mesh_data["instanceid"]}'
 
             # set two custom properties, first that it is a 3D_future object and second the category_id
             obj["is_3D_future"] = True
