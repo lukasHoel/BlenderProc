@@ -129,15 +129,6 @@ class Front3DLoader(LoaderInterface):
             obj["instanceid"] = mesh_data["instanceid"]
             obj["uid"] = f'{mesh_data["constructid"]}-{mesh_data["instanceid"]}'
 
-            print("uid" in obj)
-            print("uid" in obj.keys())
-
-            obj.uid2 = f'{mesh_data["constructid"]}-{mesh_data["instanceid"]}'
-
-            print("uid2" in obj)
-            print("uid2" in obj.keys())
-            print(hasattr(obj, "uid2"))
-
             # set two custom properties, first that it is a 3D_future object and second the category_id
             obj["is_3D_future"] = True
             if used_obj_name.lower() not in self.mapping:
