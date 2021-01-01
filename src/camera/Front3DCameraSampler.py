@@ -112,8 +112,6 @@ class Front3DCameraSampler(CameraSampler):
             # Sample noisy camera extrinsics from this one
             is_sample_noise = self.config.get_bool("sample_noise", False)
             if is_sample_noise:
-                print("sample noise from:", cam2world_matrix)
-
                 # get noise values
                 r_max = self.config.get_float("r_max", 5.0)
                 t_max = self.config.get_float("t_max", 0.01)
@@ -141,8 +139,6 @@ class Front3DCameraSampler(CameraSampler):
 
                 # save camera sample
                 CameraUtility.add_camera_pose(RT)
-
-                print("sampled noise:", RT, nr, nt)
             return True
         else:
             return False
