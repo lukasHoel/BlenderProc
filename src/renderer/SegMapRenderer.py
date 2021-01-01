@@ -303,7 +303,6 @@ class SegMapRenderer(RendererInterface):
                                 # if the current obj has a attribute with that name -> get it
                                 elif used_attribute in current_obj:
                                     used_value = current_obj[used_attribute]
-                                    print(f"got {used_attribute} from {current_obj} as {used_value}")
                                 # if the current object has a custom property with that name -> get it
                                 elif current_attribute.startswith("cp_") and used_attribute in current_obj:
                                     used_value = current_obj[used_attribute]
