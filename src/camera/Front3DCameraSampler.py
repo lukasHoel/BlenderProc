@@ -8,6 +8,7 @@ from src.utility.BlenderUtility import get_all_mesh_objects, get_bounds
 from src.utility.CameraUtility import CameraUtility
 from src.utility.Config import Config
 
+from mathutils import Matrix
 import math
 
 class Front3DCameraSampler(CameraSampler):
@@ -119,17 +120,24 @@ class Front3DCameraSampler(CameraSampler):
                 nr, nt = sample_noise(r_max, t_max)
 
                 # apply r noise
-                r = cam2world_matrix[:3, :3].to_euler()
+                r = cam2world_matrix.to_3x3().to_euler()
                 r.rotate_axis('Z', math.radians(nr[2]))
                 r.rotate_axis('Y', math.radians(nr[1]))
                 r.rotate_axis('X', math.radians(nr[0]))
-                cam2world_matrix[:3, :3] = r.to_matrix()
+                r = r.to_matrix()
 
                 # apply t noise
                 cam2world_matrix.translation += nt
 
+                # put into 3x4 matrix
+                RT = Matrix((
+                    r[0][:] + (cam2world_matrix.translation[0],),
+                    r[1][:] + (cam2world_matrix.translation[1],),
+                    r[2][:] + (cam2world_matrix.translation[2],)
+                ))
+
                 # save camera sample
-                CameraUtility.add_camera_pose(cam2world_matrix)
+                CameraUtility.add_camera_pose(RT)
 
                 print("sampled noise:", cam2world_matrix, nr, nt)
             return True
