@@ -127,7 +127,9 @@ class Front3DCameraSampler(CameraSampler):
                 r = r.to_matrix()
 
                 # apply t noise
-                cam2world_matrix.translation += nt
+                cam2world_matrix.translation[0] += nt[0]
+                cam2world_matrix.translation[1] += nt[1]
+                cam2world_matrix.translation[2] += nt[2]
 
                 # put into 3x4 matrix
                 RT = Matrix((
