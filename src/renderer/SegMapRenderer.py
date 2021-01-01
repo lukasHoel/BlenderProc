@@ -301,7 +301,7 @@ class SegMapRenderer(RendererInterface):
                                 if hasattr(current_obj, used_attribute):
                                     used_value = getattr(current_obj, used_attribute)
                                 # if the current obj has a attribute with that name -> get it
-                                if used_attribute in current_obj:
+                                elif used_attribute in current_obj:
                                     used_value = current_obj[used_attribute]
                                     print(f"got {used_attribute} from {current_obj} as {used_value}")
                                 # if the current object has a custom property with that name -> get it
