@@ -121,10 +121,12 @@ class Front3DCameraSampler(CameraSampler):
 
                 # apply r noise
                 r = cam2world_matrix.to_3x3().to_euler()
-                r.rotate_axis('Z', math.radians(nr[2]))
-                r.rotate_axis('Y', math.radians(nr[1]))
-                r.rotate_axis('X', math.radians(nr[0]))
+                print("r before:", r)
+                r = r.rotate_axis('Z', math.radians(nr[2]))
+                r = r.rotate_axis('Y', math.radians(nr[1]))
+                r = r.rotate_axis('X', math.radians(nr[0]))
                 r = r.to_matrix()
+                print("r after:", r)
 
                 # apply t noise
                 cam2world_matrix.translation[0] += nt[0]
