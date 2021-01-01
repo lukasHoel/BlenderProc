@@ -8,6 +8,7 @@ from src.utility.BlenderUtility import get_all_mesh_objects, get_bounds
 from src.utility.CameraUtility import CameraUtility
 from src.utility.Config import Config
 
+import math
 
 class Front3DCameraSampler(CameraSampler):
     """
@@ -35,6 +36,16 @@ class Front3DCameraSampler(CameraSampler):
           - The amount of objects needed per room, so that cameras are sampled in it. This avoids that cameras are 
              sampled in empty rooms. Default: 2
           - int
+        * - sample_noise
+          - If for each sampled camera a second camera should be sampled that is translated/rotated from the first
+            camera with little noise. Default: False
+          - bool
+        * - r_max
+          - Maximum rotation change per axis in degrees for sampling the noisy camera. Default: 5.0
+          - float
+        * - t_max
+          - Maximum translation change per axis for sampling the noisy camera. Default: 0.01
+          - float
     """
 
     def __init__(self, config):
@@ -96,6 +107,31 @@ class Front3DCameraSampler(CameraSampler):
         if self._is_pose_valid(floor_obj, cam, cam_ob, cam2world_matrix):
             # Set camera extrinsics as the pose is valid
             CameraUtility.add_camera_pose(cam2world_matrix)
+
+            # Sample noisy camera extrinsics from this one
+            is_sample_noise = self.config.get_bool("sample_noise", False)
+            if is_sample_noise:
+                print("sample noise from:", cam2world_matrix)
+
+                # get noise values
+                r_max = self.config.get_float("r_max", 5.0)
+                t_max = self.config.get_float("t_max", 0.01)
+                nr, nt = sample_noise(r_max, t_max)
+
+                # apply r noise
+                r = cam2world_matrix[:3, :3].to_euler()
+                r.rotate_axis('Z', math.radians(nr[2]))
+                r.rotate_axis('Y', math.radians(nr[1]))
+                r.rotate_axis('X', math.radians(nr[0]))
+                cam2world_matrix[:3, :3] = r.to_matrix()
+
+                # apply t noise
+                cam2world_matrix.translation += nt
+
+                # save camera sample
+                CameraUtility.add_camera_pose(cam2world_matrix)
+
+                print("sampled noise:", cam2world_matrix, nr, nt)
             return True
         else:
             return False
@@ -118,3 +154,13 @@ class Front3DCameraSampler(CameraSampler):
             return False
 
         return super()._is_pose_valid(cam, cam_ob, cam2world_matrix)
+
+
+def sample_noise(r_max, t_max):
+    nr = np.random.normal(0, scale=r_max / 2.0, size=3)
+    nr = np.clip(nr, a_min=-r_max, a_max=r_max)
+
+    nt = np.random.normal(0, scale=t_max / 2.0, size=3)
+    nt = np.clip(nt, a_min=-t_max, a_max=t_max)
+
+    return nr, nt
