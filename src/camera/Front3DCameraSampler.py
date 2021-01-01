@@ -131,11 +131,12 @@ class Front3DCameraSampler(CameraSampler):
                 cam2world_matrix.translation[1] += nt[1]
                 cam2world_matrix.translation[2] += nt[2]
 
-                # put into 3x4 matrix
+                # put into 4x4 matrix
                 RT = Matrix((
                     r[0][:] + (cam2world_matrix.translation[0],),
                     r[1][:] + (cam2world_matrix.translation[1],),
-                    r[2][:] + (cam2world_matrix.translation[2],)
+                    r[2][:] + (cam2world_matrix.translation[2],),
+                    cam2world_matrix[3][:]
                 ))
 
                 # save camera sample
