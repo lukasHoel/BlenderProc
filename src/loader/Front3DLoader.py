@@ -125,6 +125,8 @@ class Front3DLoader(LoaderInterface):
             col.objects.link(obj)
             # set the name of the new object to the category_id name
             obj.name = used_obj_name
+            obj["constructid"] = mesh_data["constructid"]
+            obj["instanceid"] = mesh_data["instanceid"]
 
             # set two custom properties, first that it is a 3D_future object and second the category_id
             obj["is_3D_future"] = True
