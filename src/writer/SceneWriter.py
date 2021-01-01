@@ -22,7 +22,10 @@ class SceneWriter(WriterInterface):
         path = os.path.join(self._determine_output_dir(False), "objects.txt")
         with open(path, "w") as f:
             for obj in get_all_mesh_objects():
-                f.write(f"{obj.name}\n")
+                uid = "$$NONE$$"
+                if "uid" in obj:
+                    uid = obj["uid"]
+                f.write(f"{obj.name};{uid}\n")
 
         # save mesh
         path = os.path.join(self._determine_output_dir(False), "scene.ply")
