@@ -44,7 +44,7 @@
         "intrinsics": {
           "resolution_x": 256,
           "resolution_y": 256,
-        }
+        },
         "cam_poses": [
           {
             "number_of_samples": 1,
