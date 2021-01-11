@@ -72,7 +72,7 @@
       "module": "renderer.RgbRenderer",
       "config": {
         "output_key": "colors",
-        "samples": 100,
+        "samples": 1,
         "render_normals": False,
         #"auto_tile_size": False,
         #"tile_x": 1,
