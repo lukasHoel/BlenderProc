@@ -42,12 +42,12 @@
         "r_max": 5.0,
         "t_max": 0.05,
         "intrinsics": {
-          "resolution_x": 256,
-          "resolution_y": 256,
+          "resolution_x": 512,
+          "resolution_y": 512,
         },
         "cam_poses": [
           {
-            "number_of_samples": 1,
+            "number_of_samples": 300,
             "min_interest_score": 0.5,
             "proximity_checks": {
               "min": 1.0,
