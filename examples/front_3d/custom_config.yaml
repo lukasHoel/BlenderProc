@@ -74,9 +74,9 @@
         "output_key": "colors",
         "samples": 100,
         "render_normals": False,
-        "auto_tile_size": False,
-        "tile_x": 1,
-        "tile_y": 1,
+        #"auto_tile_size": False,
+        #"tile_x": 1,
+        #"tile_y": 1,
         "simplify_subdivision_render": 1,
         "cpu_threads": 8
       }
