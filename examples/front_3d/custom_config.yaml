@@ -42,7 +42,7 @@
         "t_max": 0.05,
         "cam_poses": [
           {
-            "number_of_samples": 400,
+            "number_of_samples": 1,
             "min_interest_score": 0.3,
             "proximity_checks": {
               "min": 1.0,
