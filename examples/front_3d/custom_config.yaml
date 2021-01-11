@@ -37,9 +37,14 @@
     {
       "module": "camera.Front3DCameraSampler",
       "config": {
+        "amount_of_objects_needed_per_room": 4,
         "sample_noise": True,
         "r_max": 5.0,
         "t_max": 0.05,
+        "intrinsics": {
+          "resolution_x": 256,
+          "resolution_y": 256,
+        }
         "cam_poses": [
           {
             "number_of_samples": 1,
@@ -47,8 +52,8 @@
             "proximity_checks": {
               "min": 1.0,
               "avg": {
-                "min": 2.5,
-                "max": 3.5,
+                "min": 1.0,
+                "max": 4.0,
               },
               "no_background": True
             },
