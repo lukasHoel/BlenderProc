@@ -201,7 +201,7 @@
         "render_normals": True,
         "normals_output_key": "normals",
         "render_distance": True,
-        "distance_output_key": "distance"
+        "distance_output_key": "distance",
         "simplify_subdivision_render": 1,
         "cpu_threads": 8
       }
