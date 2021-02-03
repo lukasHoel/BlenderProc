@@ -35,7 +35,10 @@ class Front3DCameraSampler(CameraSampler):
           - Type
         * - amount_of_objects_needed_per_room
           - The amount of objects needed per room, so that cameras are sampled in it. This avoids that cameras are 
-             sampled in empty rooms. Default: 2
+             sampled in empty rooms. Default: 4
+          - int
+        * - min_visible_objects
+          - The amount of visible objects per camera pose. Default: 4
           - int
         * - sample_noise
           - If for each sampled camera a second camera should be sampled that is translated/rotated from the first
@@ -75,6 +78,8 @@ class Front3DCameraSampler(CameraSampler):
                     floor_obj_counters[floor_obj.name] += 1
         amount_of_objects_needed_per_room = self.config.get_int("amount_of_objects_needed_per_room", 2)
         self.used_floors = [obj for obj in floor_objs if floor_obj_counters[obj.name] > amount_of_objects_needed_per_room]
+
+        self.min_visible_objects = self.config.get_int("min_visible_objects", 4)
 
         super().run()
 
@@ -158,6 +163,9 @@ class Front3DCameraSampler(CameraSampler):
         :return: True, if the pose is valid
         """
         if not self._position_is_above_object(cam2world_matrix.to_translation(), floor_obj):
+            return False
+
+        if self.min_visible_objects > 0 and len(self._visible_objects(cam, cam2world_matrix)) < self.min_visible_objects:
             return False
 
         return super()._is_pose_valid(cam, cam_ob, cam2world_matrix)
