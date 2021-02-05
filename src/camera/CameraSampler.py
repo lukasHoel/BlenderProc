@@ -447,7 +447,7 @@ class CameraSampler(CameraInterface):
 
         return True
 
-    def _visible_objects(self, cam: bpy.types.Camera, cam2world_matrix: mathutils.Matrix):
+    def _visible_objects(self, cam: bpy.types.Camera, cam2world_matrix: mathutils.Matrix, skip_non_furniture=False):
         """ Returns a set of objects visible from the given camera pose.
 
         Sends a grid of rays through the camera frame and returns all objects hit by at least one ray.
@@ -474,9 +474,12 @@ class CameraSampler(CameraInterface):
                 # Compute current point on plane
                 end = frame[0] + vec_x * x / float(self.sqrt_number_of_rays - 1) + vec_y * y / float(self.sqrt_number_of_rays - 1)
                 # Send ray from the camera position through the current point on the plane
-                _, _, _, _, hit_object, _ = bpy.context.scene.ray_cast(bpy.context.view_layer.depsgraph, position, end - position)
+                hit, _, _, _, hit_object, _ = bpy.context.scene.ray_cast(bpy.context.view_layer.depsgraph, position, end - position)
 
-                raise ValueError(hit_object)
+                if hit and skip_non_furniture:
+                    name = hit_object.name
+                    if "Wall" in name or "Baseboard" in name or "Floor" in name:
+                        continue
 
                 # Add hit object to set
                 visible_objects.add(hit_object)
