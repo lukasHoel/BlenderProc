@@ -48,7 +48,7 @@
         "cam_poses": [
           {
             "number_of_samples": 300,
-            "min_interest_score": 0.5,
+            "min_interest_score": 0.3,
             "proximity_checks": {
               "min": 1.0,
               "avg": {

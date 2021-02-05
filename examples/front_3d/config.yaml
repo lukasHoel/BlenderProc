@@ -13,7 +13,7 @@
       "config":{
         "global": {
           "output_dir": "<args:2>",
-          "max_bounces": 200,
+          "max_bounces": 200, # 200 all below values as well
           "diffuse_bounces": 200,
           "glossy_bounces": 200,
           "transmission_bounces": 200,
@@ -37,9 +37,12 @@
     {
       "module": "camera.Front3DCameraSampler",
       "config": {
+        "sample_noise": True,
+        "r_max": 5.0,
+        "t_max": 0.05,
         "cam_poses": [
           {
-            "number_of_samples": 10,
+            "number_of_samples": 400,
             "min_interest_score": 0.15,
             "proximity_checks": {
               "min": 1.0,
@@ -74,10 +77,20 @@
       }
     },
     {
+      "module": "renderer.UVRenderer",
+      "config": {
+        "output_key": "uvmap",
+      }
+    },
+    {
       "module": "renderer.SegMapRenderer",
       "config": {
-        "map_by": "class"
+        "map_by": ["class", "instance", "name", "uid"],
+        "default_values": {"uid": "$$None$$"}
       }
+    },
+    {
+      "module": "writer.CameraStateWriter",
     },
     {
       "module": "writer.Hdf5Writer",
@@ -90,6 +103,9 @@
           ]
         }
       }
+    },
+    {
+      "module": "writer.SceneWriter",
     }
   ]
 }
