@@ -72,7 +72,7 @@
           }
         },
         "cf_randomize_materials": {
-          "randomization_level": 0.5,
+          "randomization_level": 0.2,
           "materials_to_replace_with": {
             "provider": "getter.Material",
             "random_samples": 1,
@@ -94,7 +94,7 @@
           }
         },
         "cf_randomize_materials": {
-          "randomization_level": 0.5,
+          "randomization_level": 0.1,
           "materials_to_replace_with": {
             "provider": "getter.Material",
             "random_samples": 1,

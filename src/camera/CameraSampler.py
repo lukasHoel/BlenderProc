@@ -475,6 +475,9 @@ class CameraSampler(CameraInterface):
                 end = frame[0] + vec_x * x / float(self.sqrt_number_of_rays - 1) + vec_y * y / float(self.sqrt_number_of_rays - 1)
                 # Send ray from the camera position through the current point on the plane
                 _, _, _, _, hit_object, _ = bpy.context.scene.ray_cast(bpy.context.view_layer.depsgraph, position, end - position)
+
+                raise ValueError(hit_object)
+
                 # Add hit object to set
                 visible_objects.add(hit_object)
 
