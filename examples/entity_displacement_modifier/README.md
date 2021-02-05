@@ -5,7 +5,7 @@
 In this example we demonstrate how to manipulate a entity by adding different displacement modifiers with different textures as part of the `EntityManipulator` module.
 This is an advanced example, please make sure that you have read:
 
-* [entity_manipulator](../shapenet): Basics of `EntityManipulator` module to load entities and manipulate them. 
+* [entity_manipulator](../shapenet/README.md): Basics of `EntityManipulator` module to load entities and manipulate them. 
 ## Usage
 
 Execute this in the BlenderProc main directory:
@@ -94,9 +94,3 @@ For the UV mapping we have to chose a `projection`. Possible projection types gi
 * If a subdivision is being applied the `subdiv_level` defines the numbers of subdivisions to perform on the entity. We are using one or two in this example.
 * `mid_level` is the texture value which will be treated as no displacement by the modifier. Texture values below this threshold will result in negative displacement along the selected direction, while texture values above it will result in positive displacement. `displacement = texture_value - mid_level`. Recall that color/luminosity values are typically between (0.0 to 1.0) in Blender, and not between (0 to 255).
 * `strength` is the amount to displace geometry. We are here sampling the `strength` over a gaussian distribution with mean `0.0` and standard deviation of `0.5`.
-
-## More examples
-
-* [camera_sampling](../camera_sampling): More on sampling for cameras.
-* [light_sampling](../light_sampling): More on sampling for lights.
-* [entity_manipulation](../entity_manipulation): More on using the EntityManipulator module.
