@@ -207,6 +207,9 @@ class SegMapRendererUtility:
                                 # if the current obj has a attribute with that name -> get it
                                 if hasattr(current_obj, used_attribute):
                                     used_value = getattr(current_obj, used_attribute)
+                                # if the current obj has a attribute with that name -> get it
+                                elif used_attribute in current_obj:
+                                    used_value = current_obj[used_attribute]
                                 # if the current object has a custom property with that name -> get it
                                 elif current_attribute.startswith("cp_") and used_attribute in current_obj:
                                     used_value = current_obj[used_attribute]
@@ -225,7 +228,8 @@ class SegMapRendererUtility:
                                     # it throws an exception
                                     raise Exception("The obj: {} does not have the "
                                                     "attribute: {}, striped: {}. Maybe try a default "
-                                                    "value.".format(current_obj.name, current_attribute, used_attribute))
+                                                    "value.".format(current_obj.name, current_attribute,
+                                                                    used_attribute))
 
                                 # check if the value should be saved as an image or in the csv file
                                 save_in_csv = False
