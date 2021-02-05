@@ -237,6 +237,8 @@ class CameraSampler(CameraInterface):
         for i in range(number_of_poses):
             # Do until a valid pose has been found or the max number of tries has been reached
             while tries < self.max_tries:
+                if tries % (self.max_tries // 100) == 0:
+                    print(f"Performed {tries} tires")
                 tries += 1
                 all_tries += 1
                 # Sample a new cam pose and check if its valid

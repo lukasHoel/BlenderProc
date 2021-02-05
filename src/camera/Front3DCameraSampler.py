@@ -165,7 +165,7 @@ class Front3DCameraSampler(CameraSampler):
         if not self._position_is_above_object(cam2world_matrix.to_translation(), floor_obj):
             return False
 
-        if self.min_visible_objects > 0 and len(self._visible_objects(cam, cam2world_matrix)) < self.min_visible_objects:
+        if self.min_visible_objects > 0 and len(self._visible_objects(cam, cam2world_matrix, skip_non_furniture=True)) < self.min_visible_objects:
             return False
 
         return super()._is_pose_valid(cam, cam_ob, cam2world_matrix)
