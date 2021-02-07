@@ -193,6 +193,9 @@
       }
     },
     {
+      "module": "manipulators.UVManipulator",
+    },
+    {
       "module": "renderer.RgbRenderer",
       "config": {
         "output_key": "colors",
