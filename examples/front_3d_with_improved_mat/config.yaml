@@ -166,7 +166,7 @@
         "cam_poses": [
           {
             "number_of_samples": 300,
-            "max_tries": 10000000, # 10 million, default is 100 million
+            "max_tries": 100000000,
             "min_interest_score": 0.3,
             "proximity_checks": {
               "min": 0.5,
