@@ -1,0 +1,44 @@
+# Args: <PATH_TO_3D-Front_json> <PATH_TO_3D-Future-model> <CC_Material_path> <output>
+{
+  "version": 3,
+  "setup": {
+    "blender_install_path": "/home_local/<env:USER>/blender/",
+    "pip": [
+      "h5py"
+    ]
+  },
+  "modules": [
+    {
+      "module": "main.Initializer",
+      "config":{
+        "global": {
+          "output_dir": "<args:3>",
+          "max_bounces": 0,
+          "diffuse_bounces": 0,
+          "glossy_bounces": 0,
+          "transmission_bounces": 0,
+          "transparency_bounces": 0
+        }
+      }
+    },
+    {
+      "module": "loader.Front3DLoader",
+      "config": {
+        "json_path": "<args:0>",
+        "3D_future_model_path": "<args:1>"
+      }
+    },
+    {
+      "module": "manipulators.WorldManipulator",
+      "config": {
+        "cf_set_world_category_id": 0  # this sets the worlds background category id to 0
+      }
+    },
+    {
+      "module": "manipulators.UVManipulator",
+    },
+    {
+      "module": "writer.SceneWriter",
+    }
+  ]
+}

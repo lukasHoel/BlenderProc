@@ -14,10 +14,10 @@ class UVManipulator(Module):
             obj.select_set(True)
 
         # entering edit mode
-        bpy.ops.object.editmode_toggle()
+        #bpy.ops.object.editmode_toggle()
 
-        bpy.ops.mesh.select_all(action='SELECT')
+        #bpy.ops.mesh.select_all(action='SELECT')
         bpy.ops.uv.smart_project(correct_aspect=False, angle_limit=1.2217)
 
         # exiting edit mode
-        bpy.ops.object.editmode_toggle()
+        #bpy.ops.object.editmode_toggle()
