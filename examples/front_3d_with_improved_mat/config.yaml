@@ -156,7 +156,6 @@
       "module": "camera.Front3DCameraSampler",
       "config": {
         "amount_of_objects_needed_per_room": 6,
-        "min_visible_objects": 6,
         "sample_noise": True,
         "r_max": 5.0,
         "t_max": 0.05,
@@ -168,12 +167,12 @@
           {
             "number_of_samples": 300,
             "max_tries": 10000000, # 10 million, default is 100 million
-            "min_interest_score": 0.15,
+            "min_interest_score": 0.3,
             "proximity_checks": {
-              "min": 1.0,
+              "min": 0.5,
               "avg": {
-                "min": 2.5,
-                "max": 3.5,
+                "min": 0.5,
+                "max": 4.0,
               },
               "no_background": True
             },
@@ -185,8 +184,8 @@
             "rotation": {
               "value": {
                 "provider":"sampler.Uniform3d",
-                "max":[1.338, 0, 6.283185307],
-                "min":[1.2217, 0, 0]
+                "max":[1.4, 0, 6.283185307],
+                "min":[1.1, 0, 0]
               }
             }
           }
