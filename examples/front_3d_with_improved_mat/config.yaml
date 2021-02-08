@@ -170,6 +170,7 @@
             "min_interest_score": 0.2,
             "interest_score_range": 0.8,
             "interest_score_step": 0.2,
+            "check_pose_novelty_translation": True,
             "proximity_checks": {
               "min": 0.5,
               "avg": {
