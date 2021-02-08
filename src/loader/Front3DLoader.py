@@ -246,15 +246,15 @@ class Front3DLoader(LoaderInterface):
             mesh.update()
 
             # set this obj active
-            #bpy.context.view_layer.objects.active = obj
+            bpy.context.view_layer.objects.active = obj
             # entering edit mode
-            #bpy.ops.object.editmode_toggle()
+            bpy.ops.object.editmode_toggle()
             # select all objects elements
-            #bpy.ops.mesh.select_all(action='SELECT')
+            bpy.ops.mesh.select_all(action='SELECT')
             # the actual unwrapping operation, 1.2217 are 70 degrees
-            #bpy.ops.uv.smart_project(correct_aspect=False, angle_limit=1.2217)
+            bpy.ops.uv.smart_project(correct_aspect=False, angle_limit=1.2217)
             # exiting edit mode
-            #bpy.ops.object.editmode_toggle()
+            bpy.ops.object.editmode_toggle()
 
             # the generation might fail if the data does not line up
             # this is not used as even if the data does not line up it is still able to render the objects
