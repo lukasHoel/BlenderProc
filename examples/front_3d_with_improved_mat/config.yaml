@@ -167,7 +167,9 @@
           {
             "number_of_samples": 300,
             "max_tries": 100000000,
-            "min_interest_score": 0.3,
+            "min_interest_score": 0.2,
+            "interest_score_range": 1.0,
+            "interest_score_step": 0.2,
             "proximity_checks": {
               "min": 0.5,
               "avg": {
