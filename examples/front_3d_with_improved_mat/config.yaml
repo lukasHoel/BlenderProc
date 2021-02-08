@@ -166,9 +166,9 @@
         "cam_poses": [
           {
             "number_of_samples": 300,
-            "max_tries": 100000000,
+            "max_tries": 1000000,
             "min_interest_score": 0.2,
-            "interest_score_range": 1.0,
+            "interest_score_range": 0.8,
             "interest_score_step": 0.2,
             "proximity_checks": {
               "min": 0.5,
