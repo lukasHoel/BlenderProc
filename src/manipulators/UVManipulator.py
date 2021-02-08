@@ -15,14 +15,17 @@ class UVManipulator(Module):
         for obj in bpy.data.objects:
             # if the object is a mesh and not a lamp or camera etc.
             if obj.type == 'MESH':
+                bpy.context.view_layer.objects.active = obj
                 obj.select_set(True)
-                print("select", obj.name)
 
         # entering edit mode
-        # bpy.ops.object.editmode_toggle()
+        bpy.ops.object.editmode_toggle()
 
-        # bpy.ops.mesh.select_all(action='SELECT')
+        # select each vertex - only the selected vertices will be considered by uv.smart_project
+        bpy.ops.mesh.select_all(action='SELECT')
+
+        # create the uv mapping - this will take a while (i.e. 5-10 minutes for a big scene)
         bpy.ops.uv.smart_project(correct_aspect=False, angle_limit=1.2217)
 
         # exiting edit mode
-        # bpy.ops.object.editmode_toggle()
+        bpy.ops.object.editmode_toggle()

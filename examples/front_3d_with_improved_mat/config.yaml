@@ -195,9 +195,9 @@
         ]
       }
     },
-    #{
-    #  "module": "manipulators.UVManipulator",
-    #},
+    {
+      "module": "manipulators.UVManipulator",
+    },
     {
       "module": "renderer.RgbRenderer",
       "config": {

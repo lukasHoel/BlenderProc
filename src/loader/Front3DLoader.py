@@ -280,6 +280,7 @@ class Front3DLoader(LoaderInterface):
             obj_file = os.path.join(folder_path, "raw_model.obj")
             # if the object exists load it -> a lot of object do not exist
             # we are unsure why this is -> we assume that not all objects have been made public
+
             if os.path.exists(obj_file):
                 # load all objects from this .obj file
                 objs = Utility.import_objects(filepath=obj_file)
@@ -345,6 +346,7 @@ class Front3DLoader(LoaderInterface):
                             links.new(emission_node.outputs["Emission"], mix_node.inputs[1])
 
                 all_objs.extend(objs)
+
         return all_objs
 
     def _move_and_duplicate_furniture(self, data: dir, all_loaded_furniture: list):
