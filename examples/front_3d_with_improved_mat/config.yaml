@@ -155,7 +155,7 @@
     {
       "module": "camera.Front3DCameraSampler",
       "config": {
-        "amount_of_objects_needed_per_room": 6,
+        "amount_of_objects_needed_per_room": 4,
         "sample_noise": True,
         "r_max": 5.0,
         "t_max": 0.05,
